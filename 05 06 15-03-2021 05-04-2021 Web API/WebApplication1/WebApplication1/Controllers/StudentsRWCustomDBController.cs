@@ -8,8 +8,8 @@ using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
 {
-    [RoutePrefix("api/StudentsRWCustom")]
-    public class StudentsRWCustomController : ApiController
+    [RoutePrefix("api/StudentsRWCustomDB")]
+    public class StudentsRWCustomDBController : ApiController
     {
         [Route("~/sg/{grade}")]
         [Route("{id}/grade")]
@@ -53,7 +53,7 @@ namespace WebApplication1.Controllers
         {
             try
             {
-                return Ok(StudentsDBMOCK.students);
+                return Ok(StudentsDB.GetAllStudents());
             }
             catch (Exception ex)
             {
@@ -62,7 +62,7 @@ namespace WebApplication1.Controllers
             }
         }
 
-        [Route("{id:int:min(1)}", Name="GetStudentByID")]
+        [Route("{id:int:min(1)}", Name="GetStudentDBByID")]
         public IHttpActionResult Get(int id)
         {
             try
@@ -107,7 +107,6 @@ namespace WebApplication1.Controllers
             }
         }
 
-
         public IHttpActionResult Post([FromBody] Student value)
         {
             try
@@ -115,7 +114,7 @@ namespace WebApplication1.Controllers
                 value.ID = StudentsDBMOCK.Counter++;
                 StudentsDBMOCK.students.Add(value);
                 //return Created(new Uri(Request.RequestUri.AbsoluteUri + value.ID), value);
-                Uri u = new Uri(Url.Link("GetStudentByID", new { id = value.ID }));
+                Uri u = new Uri(Url.Link("GetStudentDBByID", new { id = value.ID }));
                 return Created(u, value);
 
             }

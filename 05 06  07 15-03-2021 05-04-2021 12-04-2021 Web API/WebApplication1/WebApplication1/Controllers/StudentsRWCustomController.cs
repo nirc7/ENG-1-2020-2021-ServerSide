@@ -8,11 +8,9 @@ using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
 {
-    [RoutePrefix("api/StudentsRWCustom")]
     public class StudentsRWCustomController : ApiController
     {
-        [Route("~/sg/{grade}")]
-        [Route("{id}/grade")]
+        [Route("api/StudentsRWCustom/{id}/grade")]
         public IHttpActionResult GetGradesByID(int id)
         {
             try
@@ -21,25 +19,6 @@ namespace WebApplication1.Controllers
                 if (s == null)
                 {
                     return Content(HttpStatusCode.NotFound, $"student with id= {id} was not found for grade:(");
-                }
-                return Ok(s.Grade);
-            }
-            catch (Exception ex)
-            {
-                return InternalServerError(ex);
-            }
-        }
-
-        [Route("~/sgbn/{name}")]
-        [Route("{name}/gradebn")]
-        public IHttpActionResult GetGradesByName(string name)
-        {
-            try
-            {
-                Student s = StudentsDBMOCK.students.SingleOrDefault(stu => stu.Name == name);
-                if (s == null)
-                {
-                    return Content(HttpStatusCode.NotFound, $"student with name= {name} was not found for grade:(");
                 }
                 return Ok(s.Grade);
             }
@@ -62,7 +41,6 @@ namespace WebApplication1.Controllers
             }
         }
 
-        [Route("{id:int:min(1)}", Name="GetStudentByID")]
         public IHttpActionResult Get(int id)
         {
             try
@@ -79,45 +57,13 @@ namespace WebApplication1.Controllers
                 return InternalServerError(ex);
             }
         }
-
-        [Route("{isAvi:bool}")]
-        public IHttpActionResult Get(bool isAvi)
-        {
-            try
-            {
-                if (isAvi)
-                {
-
-
-                    Student s = StudentsDBMOCK.students.SingleOrDefault(stu => stu.Name == "avi");
-                    if (s == null)
-                    {
-                        return Content(HttpStatusCode.NotFound, $"student with isavi= {isAvi} was not found:(");
-                    }
-                    return Ok(s);
-                }
-                else
-                {
-                    return Ok("this is not avi");
-                }
-            }
-            catch (Exception ex)
-            {
-                return InternalServerError(ex);
-            }
-        }
-
-
         public IHttpActionResult Post([FromBody] Student value)
         {
             try
             {
                 value.ID = StudentsDBMOCK.Counter++;
                 StudentsDBMOCK.students.Add(value);
-                //return Created(new Uri(Request.RequestUri.AbsoluteUri + value.ID), value);
-                Uri u = new Uri(Url.Link("GetStudentByID", new { id = value.ID }));
-                return Created(u, value);
-
+                return Created(new Uri(Request.RequestUri.AbsoluteUri + value.ID), value);
             }
             catch (Exception ex)
             {
