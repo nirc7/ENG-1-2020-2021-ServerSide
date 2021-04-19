@@ -25,15 +25,27 @@ namespace WebApplication1.Models
             DataSet ds = new DataSet();
             adptr.Fill(ds);
             List<Student> ls = new List<Student>();
-            foreach (DataRow row in ds.Tables[0].Rows)
-            {
-                ls.Add(new Student()
+
+            //opt1
+            //foreach (DataRow row in ds.Tables[0].Rows)
+            //{
+            //    ls.Add(new Student()
+            //    {
+            //        ID = (int)row["ID"],
+            //        Name = (string)row["Name"],
+            //        Grade = (int)row["Grade"]
+            //    });
+            //}
+
+            //opt2
+            ls = ds.Tables[0].AsEnumerable()
+                .Select(stu => new Student()
                 {
-                    ID = (int)row["ID"],
-                    Name = (string)row["Name"],
-                    Grade = (int)row["Grade"]
-                });
-            }
+                    ID = stu.Field<int>("ID"),
+                    Name = stu.Field<string>("Name"),
+                    Grade = stu.Field<int>("Grade"),
+
+                }).ToList<Student>();
 
             return ls;
         }
